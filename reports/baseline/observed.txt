@@ -1,0 +1,138 @@
+Phase 1 — observed output, 2026-11-10 (WSL2 Ubuntu)
+Excerpts from actual logs. Local cache prefixes are abbreviated.
+
+=== Icarus baseline ===
+$ cd <cache>/runs/run-odiamjo1/spi && iverilog -V
+Icarus Verilog version 12.0 (stable) ()
+
+--- spi-top ---
+$ cd <cache>/runs/run-odiamjo1/spi && make sim
+iverilog -g2012 -o sim/spi rtl/*.sv assertions/*.sv tb/tb_spi_top.sv
+rtl/spi_master.sv:76: sorry: constant selects in always_* processes are not currently supported (all bits will be included).
+rtl/spi_slave.sv:111: sorry: constant selects in always_* processes are not currently supported (all bits will be included).
+vvp sim/spi
+Tests Run    : 3049
+Tests Passed : 3049
+Tests Failed : 0
+OVERALL RESULT : PASS
+tb/tb_spi_top.sv:405: $finish called at 1433115000 (1ps)
+[exit 0]
+
+--- spi-master ---
+$ cd <cache>/runs/run-odiamjo1/spi && iverilog -g2012 -s tb_spi_master -o tb_spi_master rtl/spi_master.sv assertions/sva_spi_master.sv tb/tb_spi_master.sv
+rtl/spi_master.sv:76: sorry: constant selects in always_* processes are not currently supported (all bits will be included).
+[exit 0]
+$ cd <cache>/runs/run-odiamjo1/spi && vvp tb_spi_master
+Tests Run    : 30052
+Tests Passed : 30052
+Tests Failed : 0
+OVERALL RESULT : PASS
+tb/tb_spi_master.sv:563: $finish called at 7313005000 (1ps)
+
+--- spi-slave ---
+$ cd <cache>/runs/run-odiamjo1/spi && iverilog -g2012 -s tb_spi_slave -o tb_spi_slave rtl/spi_slave.sv assertions/sva_spi_slave.sv tb/tb_spi_slave.sv
+rtl/spi_slave.sv:111: sorry: constant selects in always_* processes are not currently supported (all bits will be included).
+[exit 0]
+$ cd <cache>/runs/run-odiamjo1/spi && vvp tb_spi_slave
+Tests Run    : 30055
+Tests Passed : 30055
+Tests Failed : 0
+OVERALL RESULT : PASS
+tb/tb_spi_slave.sv:561: $finish called at 4207645000 (1ps)
+
+=== Verilator 5.032 — Antmicro UVM compile failure ===
+$ cd <cache>/runs/run-5o7fdyup/antmicro && /usr/bin/verilator --version
+Verilator 5.032 2025-01-01 rev (Debian 5.032-1)
+[exit 0]
+$ cd <cache>/runs/run-5o7fdyup/antmicro && /usr/bin/verilator -Wno-fatal --assert --binary -j 4 --top-module tbench_top --Mdir <cache>/runs/run-5o7fdyup/antmicro-obj +incdir+<cache>/runs/run-5o7fdyup/uvm/src +define+UVM_NO_DPI +incdir+<cache>/runs/run-5o7fdyup/antmicro <cache>/runs/run-5o7fdyup/uvm/src/uvm_pkg.sv sig_pkg.sv tb.sv
+%Error-PKGNODECL: <cache>/runs/run-5o7fdyup/uvm/src/base/uvm_coreservice.svh:379:42: Package/class 'type_id' not found, and needs to be predeclared (IEEE 1800-2023 26.3)
+%Error: Exiting due to 1 error(s)
+[exit 1]
+
+=== Verilator 5.054 — Antmicro UVM build ===
+$ cd <cache>/runs/run-odiamjo1/antmicro && <cache>/verilator-v5.054/bin/verilator --version
+Verilator 5.054 2026-11-01 rev v5.054
+[exit 0]
+$ cd <cache>/runs/run-odiamjo1/antmicro && <cache>/verilator-v5.054/bin/verilator -Wno-fatal --assert --binary -j 4 --top-module tbench_top --Mdir <cache>/runs/run-odiamjo1/antmicro-obj +incdir+<cache>/runs/run-odiamjo1/uvm/src +define+UVM_NO_DPI +incdir+<cache>/runs/run-odiamjo1/antmicro <cache>/runs/run-odiamjo1/uvm/src/uvm_pkg.sv sig_pkg.sv tb.sv
+- V e r i l a t i o n   R e p o r t: Verilator 5.054 2026-11-01 rev v5.054
+[exit 0]
+
+=== Verilator 5.054 — Antmicro UVM simulation ===
+$ cd <cache>/runs/run-odiamjo1/antmicro && <cache>/runs/run-odiamjo1/antmicro-obj/Vtbench_top +UVM_TESTNAME=sig_model_test +verilator+seed+1
+UVM_WARNING <cache>/runs/run-odiamjo1/uvm/src/base/uvm_root.svh(549) @ 0: reporter [NO_DPI_USED] We are thinking of removing support for UVM_NO_DPI.  Please try this test without it and evaluate the impact
+UVM_INFO @ 0: reporter [RNTST] Running test sig_model_test...
+UVM_WARNING <cache>/runs/run-odiamjo1/uvm/src/base/uvm_traversal.svh(314) @ 0: reporter [NO_VISIT_CHECK] Because UVM_REGEX_NO_DPI is defined, no uvm component name constraints will be checked
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 2 Received length: 2 are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 1 Received length: 1 are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 1 Received length: 1 are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 3 Received length: 3 are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 7 Received length: 7 are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: d Received length: d are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 9 Received length: 9 are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: e Received length: e are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: d Received length: d are the same.
+UVM_INFO <cache>/runs/run-odiamjo1/antmicro/sig_scoreboard.svh(33) @ 835: uvm_test_top.env.sig_scb [sig_scoreboard] Sent length: 9 Received length: 9 are the same.
+UVM_INFO :   14
+UVM_WARNING :    2
+UVM_ERROR :    0
+UVM_FATAL :    0
+- <cache>/runs/run-odiamjo1/uvm/src/base/uvm_root.svh:633: Verilog $finish
+[exit 0]
+
+=== Verilator 5.032 — strict SPI lint ===
+$ cd <cache>/runs/run-f0hzilrp/spi && /usr/bin/verilator --version
+Verilator 5.032 2025-01-01 rev (Debian 5.032-1)
+[exit 0]
+$ cd <cache>/runs/run-f0hzilrp/spi && /usr/bin/verilator --lint-only --top-module spi_top <cache>/runs/run-f0hzilrp/spi/rtl/spi_master.sv <cache>/runs/run-f0hzilrp/spi/rtl/spi_slave.sv <cache>/runs/run-f0hzilrp/spi/rtl/spi_top.sv
+%Warning-WIDTHEXPAND: <cache>/runs/run-f0hzilrp/spi/rtl/spi_master.sv:71:41: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'bit_count' generates 3 bits.
+%Warning-WIDTHEXPAND: <cache>/runs/run-f0hzilrp/spi/rtl/spi_master.sv:72:47: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'clk_div_counter' generates 3 bits.
+%Warning-WIDTHEXPAND: <cache>/runs/run-f0hzilrp/spi/rtl/spi_slave.sv:76:41: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'bit_count' generates 3 bits.
+%Warning-UNOPTFLAT: <cache>/runs/run-f0hzilrp/spi/rtl/spi_slave.sv:205:42: Signal unoptimizable: Circular combinational logic: 'spi_top.u_slave.__VdfgExtracted_h1a6428ac__0'
+%Error: Exiting due to 4 warning(s)
+[exit 1]
+
+=== Verilator 5.054 — strict SPI lint ===
+$ cd <cache>/runs/run-545y57lg/spi && <cache>/verilator-v5.054/bin/verilator --version
+Verilator 5.054 2026-11-01 rev v5.054
+[exit 0]
+$ cd <cache>/runs/run-545y57lg/spi && <cache>/verilator-v5.054/bin/verilator --lint-only --top-module spi_top <cache>/runs/run-545y57lg/spi/rtl/spi_master.sv <cache>/runs/run-545y57lg/spi/rtl/spi_slave.sv <cache>/runs/run-545y57lg/spi/rtl/spi_top.sv
+%Warning-WIDTHEXPAND: <cache>/runs/run-545y57lg/spi/rtl/spi_master.sv:71:41: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'bit_count' generates 3 bits.
+%Warning-WIDTHEXPAND: <cache>/runs/run-545y57lg/spi/rtl/spi_master.sv:72:47: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'clk_div_counter' generates 3 bits.
+%Warning-WIDTHEXPAND: <cache>/runs/run-545y57lg/spi/rtl/spi_slave.sv:76:41: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'bit_count' generates 3 bits.
+%Error: Exiting due to 3 warning(s)
+[exit 1]
+
+=== Icarus — width-1 master elaboration ===
+$ iverilog -g2012 -s spi_master -Pspi_master.DATA_WIDTH=1 -tnull rtl/spi_master.sv
+rtl/spi_master.sv:191: error: part select rx_shift_reg[-1:0] is out of order.
+rtl/spi_master.sv:192: error: part select rx_shift_reg[0:1] is out of order.
+2 error(s) during elaboration.
+[exit 2]
+
+=== Yosys — generic synthesis ===
+$ cd <cache>/runs/run-iy1tvtje/spi && yosys -V
+Yosys 0.52 (git sha1 fee39a3284c90249e1d9684cf6944ffbbcbb8f90)
+[exit 0]
+$ cd <cache>/runs/run-iy1tvtje/spi && yosys -Q -T -p 'read_verilog -sv rtl/*.sv; hierarchy -check -top spi_top; synth -top spi_top; check -assert; stat'
+Found and reported 0 problems.
+   Number of cells:                356
+[exit 0]
+
+=== Verilator 5.054 — candidate SPI VIP loopback ===
+$ timeout 240 verilator --binary -j 4 --timing --assert -Wno-fatal --top-module tb_top --Mdir <obj> +define+UVM_NO_DPI +incdir+<uvm>/src +incdir+spi_vip +incdir+spi_vip/example <uvm>/src/uvm_pkg.sv spi_vip/spi_if.sv spi_vip/spi_vip_pkg.sv spi_vip/example/spi_example_pkg.sv spi_vip/example/tb_top.sv
+- V e r i l a t i o n   R e p o r t: Verilator 5.054 2026-11-01 rev v5.054
+$ timeout 30 <obj>/Vtb_top +UVM_TESTNAME=spi_loopback_test +verilator+seed+1
+UVM_INFO @ 0: reporter [RNTST] Running test spi_loopback_test...
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(51) @ 840000: uvm_test_top.env.chk [SPI_CHK] MOSI MISMATCH: master sent 0x70913c07, bus decoded 0x7
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(57) @ 840000: uvm_test_top.env.chk [SPI_CHK] MISO MISMATCH: slave sent 0x5fe33074, bus decoded 0x0
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(51) @ 1720000: uvm_test_top.env.chk [SPI_CHK] MOSI MISMATCH: master sent 0x4a2d575c, bus decoded 0x5c
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(57) @ 1720000: uvm_test_top.env.chk [SPI_CHK] MISO MISMATCH: slave sent 0xd59b3577, bus decoded 0xdf
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(51) @ 2600000: uvm_test_top.env.chk [SPI_CHK] MOSI MISMATCH: master sent 0x6e18984a, bus decoded 0x4a
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(57) @ 2600000: uvm_test_top.env.chk [SPI_CHK] MISO MISMATCH: slave sent 0xf74edf13, bus decoded 0xd3
+UVM_ERROR spi_vip/example/spi_loopback_checker.sv(41) @ 3480000: uvm_test_top.env.chk [SPI_CHK] Observed a bus transaction but nothing was expected on one or both wires
+UVM_INFO spi_vip/example/spi_loopback_test.sv(50) @ 18000000: uvm_test_top [SPI_LOOPBACK_TEST] Checker totals: 0 pass / 20 fail
+UVM_WARNING :    3
+UVM_ERROR :   29
+UVM_FATAL :    0
+- Verilator: $finish at 18us; walltime 0.450 s; speed 39.961 us/s
+[exit 0]

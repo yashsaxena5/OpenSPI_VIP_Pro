@@ -1,0 +1,6 @@
+/.baseline/
+/build/
+__pycache__/
+*.pyc
+*.vcd
+*.fst

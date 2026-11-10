@@ -1,0 +1,22 @@
+OpenSPI-VIP Pro — Phase 1
+
+The project LICENSE covers original project contributions. The Phase 1
+repository stores source references and a fetch lock. The launcher checks
+out upstream sources at runtime and retains their original license files.
+
+Baseline inputs
+
+* spi-sv-core, 003e5d3d78cc8a49316e4f61d7da5e67ccd8bafc
+  Copyright (c) 2026 Aakash Bhardwaj. MIT. See upstream LICENSE.
+  https://github.com/Aakash-Bhardwaj/spi-sv-core/tree/003e5d3d78cc8a49316e4f61d7da5e67ccd8bafc
+* verilator-uvm-example, e2c9b49ab9a99298190dd1fb580bd59e2c0a7dd8
+  Copyright (c) 2025 Antmicro (README). Apache-2.0. See upstream LICENSE.
+  https://github.com/antmicro/verilator-uvm-example/tree/e2c9b49ab9a99298190dd1fb580bd59e2c0a7dd8
+* Accellera UVM 2020.3.1, 78c06547a2a0a29b3dc9dcafae62b75b2ff61544
+  Apache-2.0. See upstream LICENSE.txt, NOTICE.txt, and source headers for
+  Accellera and contributor notices.
+  https://github.com/accellera-official/uvm-core/tree/78c06547a2a0a29b3dc9dcafae62b75b2ff61544
+
+docs/upstream_audit.md records reference-only material, including the SPI
+VIP candidate. Any later import must carry applicable notices and an
+explicit file-level provenance entry.

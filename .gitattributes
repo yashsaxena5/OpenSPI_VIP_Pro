@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Keep text files LF-normalized across Windows and WSL.
+* text=auto eol=lf

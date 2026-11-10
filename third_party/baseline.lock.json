@@ -1,0 +1,14 @@
+{
+  "spi": {
+    "url": "https://github.com/Aakash-Bhardwaj/spi-sv-core.git",
+    "commit": "003e5d3d78cc8a49316e4f61d7da5e67ccd8bafc"
+  },
+  "antmicro": {
+    "url": "https://github.com/antmicro/verilator-uvm-example.git",
+    "commit": "e2c9b49ab9a99298190dd1fb580bd59e2c0a7dd8"
+  },
+  "uvm": {
+    "url": "https://github.com/accellera-official/uvm-core.git",
+    "commit": "78c06547a2a0a29b3dc9dcafae62b75b2ff61544"
+  }
+}
